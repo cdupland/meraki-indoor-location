@@ -1,14 +1,23 @@
 'use strict';
 
 var _ = require('lodash');
+var async = require('async');
 var SphericalMercator = require('sphericalmercator');
+var MapwizeAPI = require('mapwize-node-api');
 
 var config = require('../config/config');
+
+var MapwizeClient = null ;
+
+if(config.mapwise.apikey && config.mapwise.organizationid)
+    MapwizeClient = new MapwizeAPI(config.mapwise.apikey,config.mapwise.organizationid,{serverUrl: config.mapwise.apiurl});
+
 
 var merc = new SphericalMercator({
     size: 256
 });
 var floorPlansByName = {};
+
 
 /**
  * Compute X/Y positions for lat/lng corners.
@@ -132,3 +141,21 @@ function getIndoorLocation(merakiObservation) {
     return indoorLocation;
 };
 exports.getIndoorLocation = getIndoorLocation;
+
+
+
+/**
+ * Get all places from Venue on Mapwise
+ */
+function getPlaces(callcak){
+    if(config.mapwise.user && config.mapwise.password && config.mapwise.venueid) {
+        MapwizeClient.signIn(config.mapwise.user, config.mapwise.password, function () {
+            MapwizeClient.getVenuePlaces(config.mapwise.venueid, function (err, places) {
+                callcak(places);
+            });
+        });
+    }else{
+        callcak([]);
+    }
+}
+exports.getPlaces = getPlaces ;
