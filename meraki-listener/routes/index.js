@@ -59,7 +59,7 @@ exports.processMerakiNotifications = function (req, res) {
 
             // Check place
             if(config.places_list)
-                indoorLocation.place = utils.checkPlaces([ indoorLocation.longitude, indoorLocation.latitude ],placesList);
+                indoorLocation.place = utils.checkPlaces([ indoorLocation.longitude, indoorLocation.latitude ],config.places_list);
 
             // Hash MAC address
             globalObservation.clientMac = crypto.createHmac('sha256',secret).update(globalObservation.clientMac).digest('hex');
