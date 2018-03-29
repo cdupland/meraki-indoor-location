@@ -71,7 +71,7 @@ exports.processMerakiNotifications = function (req, res) {
             if (config.documentDB.enabled.toString() === 'true') {
                 documentDB.insertDocument(flatten({
                     indoorLocation: indoorLocation,
-                    merakiObservation: globalObservation,test:'Cyril'
+                    merakiObservation: globalObservation
                 }));
             }
         });
