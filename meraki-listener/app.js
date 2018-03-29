@@ -13,10 +13,4 @@ if (!config.redis.host) {
 
 mapwize.parseFloorPlans();
 
-mapwize.getPlaces(function (places) {
-    fs.writeFile("./utils/places.txt", JSON.stringify(places), function(err) {
-        require('./config/express')();
-    });
-
-});
-// require('./config/express')();
+require('./config/express')();

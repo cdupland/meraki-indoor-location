@@ -34,10 +34,46 @@ exports.processMerakiNotifications = function (req, res) {
     // Check secret sent by Meraki (if set)
     if ((!config.secret || config.secret === body.secret) && body.type === 'DevicesSeen') {
 
-        // Get place from File
-        fs.readFile('../utils/places.txt', function(err, data) {
-            placesList = JSON.parse(data);
-            MerakiNotifications(req);
+        // Prepare for MAC Addr Hash
+        var d = new Date();
+        var str_date = d.getFullYear()+''+d.getMonth()+''+d.getDay()+''+d.getHours();
+        var secret = config.secret_hash+str_date ;
+
+        _.each(req.body.data.observations, function (observation) {
+            var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
+            var ip = _.get(observation, 'ipv4') || 'null';
+            ip = ip.match(ipExtractor)[1];
+
+            var indoorLocation = mapwize.getIndoorLocation(globalObservation);
+
+            // Store the indoorLocation into a Redis cache if an indoorLocation exists, and if the extracted ip and/or macAddress are valid
+            if (!_.isEmpty(indoorLocation)) {
+                if (net.isIP(ip) === 4) {
+                    redis.setObject(ip, indoorLocation, config.redis.merakiNotificationTTL);
+                }
+
+                if (config.macAddressEnabled.toString() === 'true' && observation.clientMac) {
+                    redis.setObject(observation.clientMac, indoorLocation, config.redis.merakiNotificationTTL);
+                }
+            }
+
+            // Check place
+            if(config.places_list)
+                indoorLocation.place = utils.checkPlaces([ indoorLocation.longitude, indoorLocation.latitude ],placesList);
+
+            // Hash MAC address
+            globalObservation.clientMac = crypto.createHmac('sha256',secret).update(globalObservation.clientMac).digest('hex');
+
+            // Do whatever you want with the observations received here
+            // As an example, we log the indoorLocation along with the Meraki observation
+            // into a DocumentDB collection if enabled
+            // All object properties are flatten to ease any further analysis
+            if (config.documentDB.enabled.toString() === 'true') {
+                documentDB.insertDocument(flatten({
+                    indoorLocation: indoorLocation,
+                    merakiObservation: globalObservation,test:'Cyril'
+                }));
+            }
         });
 
         res.status(200).end();
@@ -52,46 +88,3 @@ exports.processMerakiNotifications = function (req, res) {
         res.status(400).send({ statusCode: 400, error: 'Bad Request', message: 'Unknown error' });
     }
 };
-
-function MerakiNotifications(req){
-    // Prepare for MAC Addr Hash
-    var d = new Date();
-    var str_date = d.getFullYear()+''+d.getMonth()+''+d.getDay()+''+d.getHours();
-    var secret = config.secret_hash+str_date ;
-
-    _.each(req.body.data.observations, function (observation) {
-        var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
-        var ip = _.get(observation, 'ipv4') || 'null';
-        ip = ip.match(ipExtractor)[1];
-
-        var indoorLocation = mapwize.getIndoorLocation(globalObservation);
-
-        // Store the indoorLocation into a Redis cache if an indoorLocation exists, and if the extracted ip and/or macAddress are valid
-        if (!_.isEmpty(indoorLocation)) {
-            if (net.isIP(ip) === 4) {
-                redis.setObject(ip, indoorLocation, config.redis.merakiNotificationTTL);
-            }
-
-            if (config.macAddressEnabled.toString() === 'true' && observation.clientMac) {
-                redis.setObject(observation.clientMac, indoorLocation, config.redis.merakiNotificationTTL);
-            }
-        }
-
-        // Check place
-        indoorLocation.place = utils.checkPlaces([ indoorLocation.longitude, indoorLocation.latitude ],placesList);
-
-        // Hash MAC address
-        globalObservation.clientMac = crypto.createHmac('sha256',secret).update(globalObservation.clientMac).digest('hex');
-
-        // Do whatever you want with the observations received here
-        // As an example, we log the indoorLocation along with the Meraki observation
-        // into a DocumentDB collection if enabled
-        // All object properties are flatten to ease any further analysis
-        if (config.documentDB.enabled.toString() === 'true') {
-            documentDB.insertDocument(flatten({
-                indoorLocation: indoorLocation,
-                merakiObservation: globalObservation
-            }));
-        }
-    });
-}
