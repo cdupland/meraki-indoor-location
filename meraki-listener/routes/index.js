@@ -72,11 +72,11 @@ exports.processMerakiNotifications = function (req, res) {
                 documentDB.insertDocument(flatten({
                     indoorLocation: indoorLocation,
                     merakiObservation: globalObservation
-                }));
+                },{delimiter:'_'}));
             }
         });
 
-        res.status(200).end();
+        // res.status(200).end();
     }
     else if (config.secret && config.secret !== body.secret) {
         res.status(403).send({ statusCode: 403, error: 'Forbidden', message: 'Wrong secret, access forbidden' });
