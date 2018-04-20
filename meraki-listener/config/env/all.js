@@ -7,7 +7,7 @@ module.exports = {
     // See all valid formats in: https://www.npmjs.com/package/bytes
     maxBodySize: process.env.MAX_BODY_SIZE || '50mb',
     floorPlans: process.env.FLOOR_PLANS ? JSON.parse(process.env.FLOOR_PLANS) : [{"name":"Terminal Billi","floor":null,"merakiCorners":[{"lng":-0.7007566259670723,"lat":44.8295250335519},{"lng":-0.6989086056,"lat":44.829533047},{"lng":-0.7007512832,"lat":44.8289053035},{"lng":-0.6989032628329279,"lat":44.82891331703426}],"mapwizeCorners":[{"lat":44.8295250335519,"lng":-0.7007566259670723},{"lat":44.829533047,"lng":-0.6989086056},{"lat":44.8289053035,"lng":-0.7007512832},{"lat":44.82891331703426,"lng":-0.6989032628329279}]}],
-    macAddressEnabled: process.env.MAC_ADDRESS_ENABLED || false,
+    macAddressEnabled: true,
     redis: {
         host: 'redisAirportBOD.redis.cache.windows.net',
         port: process.env.REDIS_PORT || 6379,
