@@ -39,9 +39,6 @@ exports.processMerakiNotifications = function (req, res) {
         var str_date_hour = d.getFullYear()+''+d.getMonth()+''+d.getDay()+''+d.getHours();
         var secret_hour = config.secret_hash+str_date_hour ;
 
-        var str_date_day = d.getFullYear()+''+d.getMonth()+''+d.getDay();
-        var secret_day = config.secret_hash+str_date_day ;
-
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
             var ip = _.get(observation, 'ipv4') || 'null';
@@ -66,7 +63,6 @@ exports.processMerakiNotifications = function (req, res) {
 
             // Hash MAC address
             globalObservation.clientMac = crypto.createHmac('sha256',secret_hour).update(globalObservation.clientMac).digest('hex');
-            globalObservation.clientMac_day = crypto.createHmac('sha256',secret_day).update(globalObservation.clientMac).digest('hex');
 
             // Do whatever you want with the observations received here
             // As an example, we log the indoorLocation along with the Meraki observation
@@ -75,7 +71,8 @@ exports.processMerakiNotifications = function (req, res) {
             if (config.documentDB.enabled.toString() === 'true') {
                 documentDB.insertDocument(flatten({
                     indoorLocation: indoorLocation,
-                    merakiObservation: globalObservation
+                    merakiObservation: globalObservation,
+                    deviceId: globalObservation.clientMac
                 },{delimiter:'_'}));
             }
         });
