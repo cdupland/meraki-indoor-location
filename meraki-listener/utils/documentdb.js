@@ -22,7 +22,10 @@ if (config.documentDB.enabled.toString() === 'true') {
 function insertDocument(jsonObject) {
     if (config.documentDB.enabled.toString() === 'true') {
         var collectionLink = `dbs/${config.documentDB.database}/colls/${config.documentDB.collection}`;
-        documentDBClient.createDocument(collectionLink, jsonObject, function (err) {
+        var partitionKey = {
+            partitionKey : [jsonObject.deviceId]
+        };
+        documentDBClient.createDocument(collectionLink, jsonObject, partitionKey, function (err) {
             if (err) {
                 utils.log(err);
             }
