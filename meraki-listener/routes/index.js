@@ -58,8 +58,7 @@ exports.processMerakiNotifications = function (req, res) {
 
 
             // Check place
-            // if(config.places_list)
-            var place = mapwize.checkPlace(globalObservation.location.lat,globalObservation.location.lng);
+            var place = mapwize.checkPlace(indoorLocation.latitude,indoorLocation.longitude);
 
             // Hash MAC address
             globalObservation.clientMac = crypto.createHmac('sha256',secret_hour).update(globalObservation.clientMac).digest('hex');
