@@ -12,9 +12,8 @@ var redis = require('../utils/redis');
 var utils = require('../utils/index');
 const crypto = require('crypto');
 
-
 var ipExtractor = /^\/?(.+)/;
-var placesList = [] ;
+
 
 /**
  * Default route
@@ -57,9 +56,10 @@ exports.processMerakiNotifications = function (req, res) {
                 }
             }
 
+
             // Check place
             // if(config.places_list)
-            //     indoorLocation.place = utils.checkPlaces([ indoorLocation.longitude, indoorLocation.latitude ],config.places_list);
+            var place = mapwize.checkPlace(globalObservation.location.lat,globalObservation.location.lng);
 
             // Hash MAC address
             globalObservation.clientMac = crypto.createHmac('sha256',secret_hour).update(globalObservation.clientMac).digest('hex');
@@ -72,9 +72,11 @@ exports.processMerakiNotifications = function (req, res) {
                 documentDB.insertDocument(flatten({
                     indoorLocation: indoorLocation,
                     merakiObservation: globalObservation,
-                    deviceId: globalObservation.clientMac
+                    deviceId: globalObservation.clientMac,
+                    place: place
                 },{delimiter:'_'}));
             }
+
         });
 
         res.status(200).end();
