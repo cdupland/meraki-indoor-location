@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var async = require('async');
+var util = require('./index');
 var SphericalMercator = require('sphericalmercator');
 var MapwizeAPI = require('mapwize-node-api');
 
@@ -17,6 +18,7 @@ var merc = new SphericalMercator({
     size: 256
 });
 var floorPlansByName = {};
+var placesList = [] ;
 
 
 /**
@@ -147,15 +149,21 @@ exports.getIndoorLocation = getIndoorLocation;
 /**
  * Get all places from Venue on Mapwise
  */
-function getPlaces(callcak){
+function getPlaces(){
     if(config.mapwise.user && config.mapwise.password && config.mapwise.venueid) {
         MapwizeClient.signIn(config.mapwise.user, config.mapwise.password, function () {
             MapwizeClient.getVenuePlaces(config.mapwise.venueid, function (err, places) {
-                callcak(places);
+                placesList = places ;
             });
         });
-    }else{
-        callcak([]);
     }
 }
 exports.getPlaces = getPlaces ;
+
+/**
+ *
+ */
+function checkPlace(lat,lng){
+    return util.checkPlaces([lng,lat],placesList);
+}
+exports.checkPlace = checkPlace ;

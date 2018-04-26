@@ -13,4 +13,6 @@ if (!config.redis.host) {
 
 mapwize.parseFloorPlans();
 
+mapwize.getPlaces();
+
 require('./config/express')();
