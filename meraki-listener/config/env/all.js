@@ -5,7 +5,7 @@ module.exports = {
     secret: process.env.SECRET,
     validator: process.env.VALIDATOR,
     // See all valid formats in: https://www.npmjs.com/package/bytes
-    maxBodySize: process.env.MAX_BODY_SIZE || '50mb',
+    maxBodySize: process.env.MAX_BODY_SIZE || '100mb',
     floorPlans: process.env.FLOOR_PLANS ? JSON.parse(process.env.FLOOR_PLANS) : [],
     macAddressEnabled: process.env.MAC_ADDRESS_ENABLED || false,
     redis: {
