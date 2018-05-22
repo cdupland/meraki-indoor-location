@@ -7,9 +7,6 @@ var mapwize = require('./utils/mapwize');
 if (!config.floorPlans) {
     throw 'Missing required parameter: FLOOR_PLANS';
 }
-if (!config.redis.host) {
-    throw 'Missing required parameter: REDIS_HOST';
-}
 
 mapwize.parseFloorPlans();
 

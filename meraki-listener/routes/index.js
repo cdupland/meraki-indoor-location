@@ -8,7 +8,6 @@ var fs = require('fs');
 var config = require('../config/config');
 var documentDB = require('../utils/documentdb');
 var mapwize = require('../utils/mapwize');
-var redis = require('../utils/redis');
 var utils = require('../utils/index');
 const crypto = require('crypto');
 
@@ -44,18 +43,6 @@ exports.processMerakiNotifications = function (req, res) {
             ip = ip.match(ipExtractor)[1];
 
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
-
-            // Store the indoorLocation into a Redis cache if an indoorLocation exists, and if the extracted ip and/or macAddress are valid
-            if (!_.isEmpty(indoorLocation)) {
-                if (net.isIP(ip) === 4) {
-                    redis.setObject(ip, indoorLocation, config.redis.merakiNotificationTTL);
-                }
-
-                if (config.macAddressEnabled.toString() === 'true' && observation.clientMac) {
-                    redis.setObject(observation.clientMac, indoorLocation, config.redis.merakiNotificationTTL);
-                }
-            }
-
 
             // Check place
             var place = mapwize.checkPlace(indoorLocation.latitude,indoorLocation.longitude);
