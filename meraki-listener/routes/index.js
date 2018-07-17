@@ -30,17 +30,17 @@ exports.processMerakiNotifications = function (req, res) {
     var body = req.body;
 
     // Check secret sent by Meraki (if set)
-    if ((!config.secret || config.secret === body.secret) && body.type === 'DevicesSeen') {
+    if ((!config.secret || config.secret === body.secret) && (body.type === 'DevicesSeen' || body.type === 'BluetoothDevicesSeen')) {
 
         // Prepare for MAC Addr Hash
         // var d = new Date();
         // var str_date_hour = d.getFullYear()+''+d.getMonth()+''+d.getDay()+''+d.getHours();
         // var secret_hour = config.secret_hash+str_date_hour ;
+        var secret_hour = config.secret_hash ;
 
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
-            var ip = _.get(observation, 'ipv4') || 'null';
-            ip = ip.match(ipExtractor)[1];
+            globalObservation.type = body.type ;
 
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
 
@@ -48,7 +48,7 @@ exports.processMerakiNotifications = function (req, res) {
             var place = mapwize.checkPlace(indoorLocation.latitude,indoorLocation.longitude);
 
             // Hash MAC address
-            // globalObservation.clientMac = crypto.createHmac('sha256',secret_hour).update(globalObservation.clientMac).digest('hex');
+            globalObservation.clientMac = crypto.createHmac('sha256',secret_hour).update(globalObservation.clientMac).digest('hex');
 
             // Do whatever you want with the observations received here
             // As an example, we log the indoorLocation along with the Meraki observation
@@ -70,7 +70,7 @@ exports.processMerakiNotifications = function (req, res) {
     else if (config.secret && config.secret !== body.secret) {
         res.status(403).send({ statusCode: 403, error: 'Forbidden', message: 'Wrong secret, access forbidden' });
     }
-    else if (body.type !== 'DevicesSeen') {
+    else if (body.type !== 'DevicesSeen' || body.type === 'BluetoothDevicesSeen') {
         res.status(400).send({ statusCode: 400, error: 'Bad Request', message: 'Wrong notification type' });
     }
     else {
