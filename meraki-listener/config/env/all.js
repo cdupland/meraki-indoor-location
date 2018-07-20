@@ -28,5 +28,6 @@ module.exports = {
         organizationid: process.env.MAPWISE_ORGANIZATIONID,
         apikey: process.env.MAPWISE_APIKEY,
         apiurl: process.env.MAPWISE_APIURL
-    }
+    },
+    secret_hash : process.env.SECRET_HASH
 };
