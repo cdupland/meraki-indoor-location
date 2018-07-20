@@ -7,6 +7,7 @@ var fs = require('fs');
 
 var config = require('../config/config');
 var documentDB = require('../utils/documentdb');
+var eventHub = require('../utils/eventhub');
 var mapwize = require('../utils/mapwize');
 var utils = require('../utils/index');
 const crypto = require('crypto');
@@ -32,36 +33,22 @@ exports.processMerakiNotifications = function (req, res) {
     // Check secret sent by Meraki (if set)
     if ((!config.secret || config.secret === body.secret) && body.type === 'DevicesSeen') {
 
-        // Prepare for MAC Addr Hash
-        // var d = new Date();
-        // var str_date_hour = d.getFullYear()+''+d.getMonth()+''+d.getDay()+''+d.getHours();
-        // var secret_hour = config.secret_hash+str_date_hour ;
-
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
-            var ip = _.get(observation, 'ipv4') || 'null';
-            ip = ip.match(ipExtractor)[1];
 
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
-
             // Check place
-            var place = mapwize.checkPlace(indoorLocation.latitude,indoorLocation.longitude);
+            indoorLocation.place = mapwize.checkPlace(indoorLocation.latitude,indoorLocation.longitude);
+            globalObservation.place = mapwize.checkPlace(observation.location.lat,observation.location.lng);
 
             // Hash MAC address
-            // globalObservation.clientMac = crypto.createHmac('sha256',secret_hour).update(globalObservation.clientMac).digest('hex');
+            globalObservation.clientMac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
 
             // Do whatever you want with the observations received here
-            // As an example, we log the indoorLocation along with the Meraki observation
-            // into a DocumentDB collection if enabled
-            // All object properties are flatten to ease any further analysis
-            if (config.documentDB.enabled.toString() === 'true') {
-                documentDB.insertDocument(flatten({
-                    indoorLocation: indoorLocation,
-                    merakiObservation: globalObservation,
-                    deviceId: globalObservation.clientMac,
-                    place: place
-                },{delimiter:'_'}));
-            }
+            eventHub.sendMessage({
+                indoorLocation: indoorLocation,
+                merakiObservation: globalObservation
+            });
 
         });
 
