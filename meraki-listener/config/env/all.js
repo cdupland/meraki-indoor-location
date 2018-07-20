@@ -15,6 +15,12 @@ module.exports = {
         database: process.env.DOCUMENT_DB_DATABASE,
         collection: process.env.DOCUMENT_DB_COLLECTION
     },
+    eventHub:{
+        uri : process.env.EVENT_HUB_URI,
+        eventHubName : process.env.EVENT_HUB_NAME,
+        saName : process.env.EVENT_HUB_SANAME,
+        saKey : process.env.EVENT_HUB_SAKEY
+    },
     mapwise: {
         user: process.env.MAPWISE_USER,
         password: process.env.MAPWISE_PASSWORD,
