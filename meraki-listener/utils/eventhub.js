@@ -38,8 +38,8 @@ exports.sendMessage = function (msg){
 
     request(options, function (error, response, body) {
         if (error) throw new Error(error);
-        console.log(response); // response.statusCode
-        console.log(response.statusMessage); // response.statusCode
+        // console.log(response); // response.statusCode
+        // console.log(response.statusMessage); // response.statusCode
         // 401 : Unauthorized (Bad Authorization)
     });
 };

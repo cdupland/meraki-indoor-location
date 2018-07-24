@@ -45,9 +45,14 @@ exports.processMerakiNotifications = function (req, res) {
             globalObservation.clientMac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
 
             // Do whatever you want with the observations received here
-            eventHub.sendMessage({
+            console.log({
                 indoorLocation: indoorLocation,
                 merakiObservation: globalObservation
+            });
+            eventHub.sendMessage({
+                indoorLocation: indoorLocation,
+                merakiObservation: globalObservation,
+                secret: config.secret
             });
 
         });
