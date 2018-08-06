@@ -6,7 +6,7 @@ var net = require('net');
 var fs = require('fs');
 
 var config = require('../config/config');
-var documentDB = require('../utils/documentdb');
+// var documentDB = require('../utils/documentdb');
 var eventHub = require('../utils/eventhub');
 var mapwize = require('../utils/mapwize');
 var utils = require('../utils/index');
@@ -45,10 +45,6 @@ exports.processMerakiNotifications = function (req, res) {
             globalObservation.clientMac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
 
             // Do whatever you want with the observations received here
-            console.log({
-                indoorLocation: indoorLocation,
-                merakiObservation: globalObservation
-            });
             eventHub.sendMessage({
                 indoorLocation: indoorLocation,
                 merakiObservation: globalObservation,
