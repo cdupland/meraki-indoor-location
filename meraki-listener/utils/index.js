@@ -82,7 +82,7 @@ function checkPlaces(latlng,places){
     _.each(places,function(place){
         var polygon = place.geometry.coordinates[0] ;
         if(isInsideGeoJson([ latlng[0],latlng[1] ], polygon) )
-            _room = place.alias ;
+            _room = place.name ;
     });
     return _room ;
 }
