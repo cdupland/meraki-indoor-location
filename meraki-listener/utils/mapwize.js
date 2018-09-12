@@ -163,7 +163,7 @@ exports.getPlaces = getPlaces ;
 /**
  *
  */
-function checkPlace(lat,lng){
-    return util.checkPlaces([lng,lat],placesList);
+function checkPlace(appFloor,lat,lng){
+    return util.checkPlaces(floorPlansByName[appFloor].floor,[lng,lat],placesList);
 }
 exports.checkPlace = checkPlace ;

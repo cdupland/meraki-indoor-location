@@ -77,11 +77,11 @@ function isInsideGeoJson(point, polygon) {
     return isInside(xyPoint, xyPolygon);
 }
 
-function checkPlaces(latlng,places){
+function checkPlaces(appFloor,latlng,places){
     var _room = '' ;
     _.each(places,function(place){
         var polygon = place.geometry.coordinates[0] ;
-        if(isInsideGeoJson([ latlng[0],latlng[1] ], polygon) )
+        if(appFloor === place.floor && isInsideGeoJson([ latlng[0],latlng[1] ], polygon) )
             _room = place.name ;
     });
     return _room ;
