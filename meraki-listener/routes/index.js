@@ -6,10 +6,11 @@ var net = require('net');
 var fs = require('fs');
 
 var config = require('../config/config');
-// var documentDB = require('../utils/documentdb');
+var parcours = require('../utils/parcours');
 var eventHub = require('../utils/eventhub');
 var mapwize = require('../utils/mapwize');
 var utils = require('../utils/index');
+var moment = require('moment');
 const crypto = require('crypto');
 
 var ipExtractor = /^\/?(.+)/;
@@ -35,21 +36,30 @@ exports.processMerakiNotifications = function (req, res) {
 
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
-
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
-            // Check place
-            indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
-            globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
 
             // Hash MAC address
-            globalObservation.clientMac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
+            var client_mac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
+            globalObservation.clientMac = client_mac ;
+            indoorLocation.client_mac = client_mac ;
+
+            // Check place
+            // indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
+            // globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
+
+            // Generate Random data
+            indoorLocation.place = _.sample(['Zone A','Zone B']);
+            indoorLocation.timestamp = parseInt(moment().format('X')) ; // + _.random(0,5);
+
+            // console.log(client_mac,'->',indoorLocation.place);
+            parcours.gestionParcours(indoorLocation,2);
 
             // Do whatever you want with the observations received here
-            eventHub.sendMessage({
-                indoorLocation: indoorLocation,
-                merakiObservation: globalObservation,
-                secret: config.secret
-            });
+            // eventHub.sendMessage({
+            //     indoorLocation: indoorLocation,
+            //     merakiObservation: globalObservation,
+            //     secret: config.secret
+            // });
 
         });
 
