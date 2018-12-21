@@ -1,5 +1,11 @@
 # Created by https://www.gitignore.io/api/node,macos
 
+
+# Cyril
+meraki-listener/config/env/all_*.js
+meraki-listener/config/env/caissedesdepots.js
+meraki-listener/test/
+
 ### macOS ###
 *.DS_Store
 .AppleDouble
