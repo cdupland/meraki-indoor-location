@@ -31,5 +31,5 @@ module.exports = {
     },
     secret_hash : process.env.SECRET_HASH,
     min_parcours_duration : process.env.MIN_PARCOURS_DURATION,
-    timezone : process.env.timezone
+    timezone : process.env.TIMEZONE
 };
