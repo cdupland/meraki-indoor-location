@@ -49,17 +49,31 @@ exports.processMerakiNotifications = function (req, res) {
 
             // Generate Random data
             indoorLocation.place = _.sample(['Zone A','Zone B']);
-            indoorLocation.timestamp = parseInt(moment().format('X')) ; // + _.random(0,5);
-
-            // console.log(client_mac,'->',indoorLocation.place);
+            globalObservation.seenEpoch = indoorLocation.timestamp ;
+            
             parcours.gestionParcours(indoorLocation,2);
 
             // Do whatever you want with the observations received here
-            // eventHub.sendMessage({
-            //     indoorLocation: indoorLocation,
-            //     merakiObservation: globalObservation,
-            //     secret: config.secret
-            // });
+            eventHub.sendMessage({
+                client_mac : client_mac,
+                indoorLocation_latitude : indoorLocation.latitude,
+                indoorLocation_longitude : indoorLocation.longitude,
+                indoorLocation_floor : indoorLocation.floor,
+                indoorLocation_place : indoorLocation.place,
+
+                merakiObservation_latitude : globalObservation.location.lat,
+                merakiObservation_longitude : globalObservation.location.lng,
+                merakiObservation_unc : globalObservation.location.unc,
+
+                merakiObservation_seenEpoch : globalObservation.seenEpoch,
+                merakiObservation_rssi : globalObservation.rssi,
+                merakiObservation_place : globalObservation.place,
+                merakiObservation_ssid : globalObservation.ssid,
+                apMac : globalObservation.apMac,
+
+                secret: config.secret,
+                message_type: 'brut'
+            });
 
         });
 
