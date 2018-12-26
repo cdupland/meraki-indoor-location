@@ -44,12 +44,12 @@ exports.processMerakiNotifications = function (req, res) {
             indoorLocation.client_mac = client_mac ;
 
             // Check place
-            // indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
-            // globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
+            indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
+            globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
 
             // Generate Random data
             // indoorLocation.place = _.sample(['Zone A','Zone B']);
-            globalObservation.seenEpoch = indoorLocation.timestamp ;
+            // globalObservation.seenEpoch = indoorLocation.timestamp ;
             
             parcours.gestionParcours(indoorLocation,2);
 
