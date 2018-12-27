@@ -10,11 +10,11 @@ var parcours = require('../utils/parcours');
 var eventHub = require('../utils/eventhub');
 var mapwize = require('../utils/mapwize');
 var utils = require('../utils/index');
-var moment = require('moment');
+var moment = require('moment-timezone');
 const crypto = require('crypto');
 
 var ipExtractor = /^\/?(.+)/;
-
+const datetime_format = 'YYYY-MM-DD HH:mm:ss' ;
 
 /**
  * Default route
@@ -66,6 +66,7 @@ exports.processMerakiNotifications = function (req, res) {
                 merakiObservation_unc : globalObservation.location.unc,
 
                 merakiObservation_seenEpoch : globalObservation.seenEpoch,
+                merakiObservation_seenTime : moment.unix(globalObservation.seenEpoch).tz(config.timezone).format(datetime_format),
                 merakiObservation_rssi : globalObservation.rssi,
                 merakiObservation_place : globalObservation.place,
                 merakiObservation_ssid : globalObservation.ssid,
