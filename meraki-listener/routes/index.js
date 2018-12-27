@@ -70,7 +70,7 @@ exports.processMerakiNotifications = function (req, res) {
                 merakiObservation_rssi : globalObservation.rssi,
                 merakiObservation_place : globalObservation.place,
                 merakiObservation_ssid : globalObservation.ssid,
-                apMac : globalObservation.apMac,
+                merakiObservation_apMac : globalObservation.apMac,
 
                 secret: config.secret,
                 message_type: 'brut'
