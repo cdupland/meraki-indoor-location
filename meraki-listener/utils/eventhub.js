@@ -4,6 +4,7 @@ var utf8 = require('utf8');
 var crypto = require('crypto');
 var config = require('../config/config');
 var request = require("request");
+var logger = require('../utils/log');
 
 var token = createSharedAccessToken(config.eventHub.uri,config.eventHub.saName,config.eventHub.saKey);
 
@@ -37,7 +38,7 @@ exports.sendMessage = function (msg){
     };
 
     request(options, function (error, response, body) {
-        if (error) throw new Error(error);
+        if (error) logger.error(error);
         // console.log(response); // response.statusCode
         // console.log(response.statusMessage); // response.statusCode
         // 401 : Unauthorized (Bad Authorization)

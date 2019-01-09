@@ -3,6 +3,8 @@
 var config = require('../config/config');
 var cache = require('../cache');
 var eventHub = require('../utils/eventhub');
+var logger = require('../utils/log');
+
 var _ = require('lodash');
 var moment = require('moment-timezone');
 
@@ -15,10 +17,11 @@ exports.gestionParcours = function (indoorLocation,version,next){
 
         // console.log(moment.unix(indoorLocation.timestamp).tz(config.timezone).format('YYYY-MM-DD HH:mm:ss'),indoorLocation.place);
 
-        if(err) console.log(err)
+        if(err) logger.error(err);
         else if (!cacheObj) {
             // Init new object before caching
             indoorLocation = _.omit(indoorLocation,['latitude','longitude','floor','accuracy']);
+            indoorLocation.id_client_mac = indoorLocation.client_mac + Date() ;
             indoorLocation.current_order = 0 ;
             indoorLocation.short_places_list = [] ;
             indoorLocation.places_list = [
@@ -30,7 +33,6 @@ exports.gestionParcours = function (indoorLocation,version,next){
                 }
             ];
             cache.setObject(indoorLocation.client_mac,indoorLocation);
-            // console.log(indoorLocation);
         
         } else {
             
@@ -104,8 +106,6 @@ exports.gestionParcours = function (indoorLocation,version,next){
 
 function sendZone(params){
     var zone = params.zone ;
-    // console.log("Send zone"," ->",zone.place,zone.duration_second);
-
     eventHub.sendMessage({
         order: params.i,
         zone: zone.place,

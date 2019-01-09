@@ -10,6 +10,7 @@ var parcours = require('../utils/parcours');
 var eventHub = require('../utils/eventhub');
 var mapwize = require('../utils/mapwize');
 var utils = require('../utils/index');
+var logger = require('../utils/log');
 var moment = require('moment-timezone');
 const crypto = require('crypto');
 
@@ -34,6 +35,8 @@ exports.processMerakiNotifications = function (req, res) {
     // Check secret sent by Meraki (if set)
     if ((!config.secret || config.secret === body.secret) && body.type === 'DevicesSeen') {
 
+        logger.log("Revceive Meraki Observations : "+req.body.data.observations.length+" Observations");
+        
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
