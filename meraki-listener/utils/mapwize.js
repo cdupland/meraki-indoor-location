@@ -124,7 +124,7 @@ exports.parseFloorPlans = parseFloorPlans;
  */
 function getIndoorLocation(merakiObservation) {
     var apFloor = merakiObservation.apFloors[0] ? merakiObservation.apFloors[0] : '';
-    var apTag = merakiObservation.apTags[0] ;
+    var apTag = merakiObservation.apTags[0] ? merakiObservation.apTags[0] : 'No AP';
     var floorPlan = floorPlansByName[apFloor];
     var indoorLocation = {};
 
