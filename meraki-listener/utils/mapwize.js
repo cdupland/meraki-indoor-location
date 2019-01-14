@@ -124,7 +124,7 @@ exports.parseFloorPlans = parseFloorPlans;
  */
 function getIndoorLocation(merakiObservation) {
     var apFloor = merakiObservation.apFloors[0] ? merakiObservation.apFloors[0] : '';
-    var apTag = merakiObservation.apTags[0] ? merakiObservation.apTags[0] : 'No AP';
+    var apTag = merakiObservation.apTags[1] ? merakiObservation.apTags[1] : '';
     var floorPlan = floorPlansByName[apFloor];
     var indoorLocation = {};
 
@@ -139,7 +139,7 @@ function getIndoorLocation(merakiObservation) {
             floor: floorPlan.floor,
             accuracy: _.get(merakiObservation, 'location.unc'),
             timestamp: _.get(merakiObservation, 'seenEpoch', Date.now()),
-            ap: merakiObservation,
+            ap: apTag,
             rssi: _.get(merakiObservation, 'rssi'),
             seentime: moment.unix(_.get(merakiObservation, 'seenEpoch')).format('DD/MM/YYYY HH:m:ss')
         };
