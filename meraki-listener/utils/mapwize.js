@@ -139,7 +139,7 @@ function getIndoorLocation(merakiObservation) {
             floor: floorPlan.floor,
             accuracy: _.get(merakiObservation, 'location.unc'),
             timestamp: _.get(merakiObservation, 'seenEpoch', Date.now()),
-            ap: _.get(merakiObservation, 'apTags')[0],
+            ap: merakiObservation,
             rssi: _.get(merakiObservation, 'rssi'),
             seentime: moment.unix(_.get(merakiObservation, 'seenEpoch')).format('DD/MM/YYYY HH:m:ss')
         };
