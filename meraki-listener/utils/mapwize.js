@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var async = require('async');
+var moment = require('moment');
 var util = require('./index');
 var SphericalMercator = require('sphericalmercator');
 var MapwizeAPI = require('mapwize-node-api');
@@ -123,6 +124,7 @@ exports.parseFloorPlans = parseFloorPlans;
  */
 function getIndoorLocation(merakiObservation) {
     var apFloor = merakiObservation.apFloors[0] ? merakiObservation.apFloors[0] : '';
+    var apTag = merakiObservation.apTags[0] ;
     var floorPlan = floorPlansByName[apFloor];
     var indoorLocation = {};
 
@@ -136,7 +138,10 @@ function getIndoorLocation(merakiObservation) {
             longitude: coordinate.lng,
             floor: floorPlan.floor,
             accuracy: _.get(merakiObservation, 'location.unc'),
-            timestamp: _.get(merakiObservation, 'seenEpoch', Date.now())
+            timestamp: _.get(merakiObservation, 'seenEpoch', Date.now()),
+            ap: apTag,
+            rssi: _.get(merakiObservation, 'rssi'),
+            seentime: moment.unix(_.get(merakiObservation, 'seenEpoch')).format('DD/MM/YYYY HH:m:ss')
         };
     }
 

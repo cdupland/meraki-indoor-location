@@ -13,6 +13,7 @@ var utils = require('../utils/index');
 var logger = require('../utils/log');
 var moment = require('moment-timezone');
 const crypto = require('crypto');
+var cache = require('../cache');
 
 var ipExtractor = /^\/?(.+)/;
 const datetime_format = 'YYYY-MM-DD HH:mm:ss' ;
@@ -40,7 +41,30 @@ exports.processMerakiNotifications = function (req, res) {
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
+            indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
+            
+             /*
+             IP address
+             */
+            var ip = _.get(observation, 'ipv4') || 'null';
+            ip = ip.match(ipExtractor)[1];
 
+             /*
+             Store in cache
+             */
+            if (!_.isEmpty(indoorLocation)) {
+                if (net.isIP(ip) === 4) {
+                    cache.setObject(ip, indoorLocation, config.merakiNotificationTTL);
+                    console.log(indoorLocation);
+                }
+
+                if (config.macAddressEnabled.toString() === 'true' && observation.clientMac) {
+                    cache.setObject(observation.clientMac, indoorLocation, config.merakiNotificationTTL);
+                }
+            }
+
+
+/*
             // Hash MAC address
             var client_mac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
             globalObservation.clientMac = client_mac ;
@@ -78,7 +102,7 @@ exports.processMerakiNotifications = function (req, res) {
                 secret: config.secret,
                 message_type: 'brut'
             });
-
+*/
         });
 
         res.status(200).end();
