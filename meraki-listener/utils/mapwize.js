@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var async = require('async');
-var moment = require('moment');
+var moment = require('moment-timezone');
 var util = require('./index');
 var SphericalMercator = require('sphericalmercator');
 var MapwizeAPI = require('mapwize-node-api');
