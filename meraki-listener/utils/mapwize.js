@@ -132,7 +132,7 @@ function getIndoorLocation(merakiObservation) {
         var scale = getScale(merakiObservation.location, floorPlan.merakiXYCorners);
         var coordinate = projectWithScale(scale, floorPlan.mapwizeXYCorners);
 
-        // Create the object that will be saved in redis
+        // Create the object that will be saved in cache
         indoorLocation = {
             latitude: coordinate.lat,
             longitude: coordinate.lng,
@@ -141,7 +141,8 @@ function getIndoorLocation(merakiObservation) {
             timestamp: _.get(merakiObservation, 'seenEpoch', Date.now()),
             ap: apTag,
             rssi: _.get(merakiObservation, 'rssi'),
-            seentime: moment.unix(_.get(merakiObservation, 'seenEpoch')).format('DD/MM/YYYY HH:m:ss')
+            seentime: moment.unix(_.get(merakiObservation, 'seenEpoch')).tz(config.timezone).format('DD/MM/YYYY HH:m:ss'),
+            merakiObservation : merakiObservation
         };
     }
 

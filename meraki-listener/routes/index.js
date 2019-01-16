@@ -55,7 +55,6 @@ exports.processMerakiNotifications = function (req, res) {
             if (!_.isEmpty(indoorLocation)) {
                 if (net.isIP(ip) === 4) {
                     cache.setObject(ip, indoorLocation, config.merakiNotificationTTL);
-                    console.log(indoorLocation);
                 }
 
                 if (config.macAddressEnabled.toString() === 'true' && observation.clientMac) {
