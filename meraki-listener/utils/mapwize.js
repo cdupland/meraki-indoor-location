@@ -141,7 +141,7 @@ function getIndoorLocation(merakiObservation) {
             timestamp: _.get(merakiObservation, 'seenEpoch', Date.now()),
             ap: apTag,
             rssi: _.get(merakiObservation, 'rssi'),
-            seentime: moment.unix(_.get(merakiObservation, 'seenEpoch')).tz(config.timezone).format('DD/MM/YYYY HH:m:ss'),
+            seentime: moment.unix(_.get(merakiObservation, 'seenEpoch')).tz(config.timezone).format('DD/MM/YYYY HH:mm:ss'),
             merakiObservation : merakiObservation
         };
     }
