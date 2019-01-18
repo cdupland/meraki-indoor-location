@@ -41,8 +41,16 @@ exports.processMerakiNotifications = function (req, res) {
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
-            indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
             
+            // Check place
+            indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
+            globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
+
+            // Hash MAC address
+            var client_mac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
+            globalObservation.clientMac = client_mac ;
+            indoorLocation.client_mac = globalObservation.clientMac ;
+
              /*
              IP address
              */
@@ -54,7 +62,11 @@ exports.processMerakiNotifications = function (req, res) {
              */
             if (!_.isEmpty(indoorLocation)) {
                 if (net.isIP(ip) === 4) {
-                    cache.setObject(ip, indoorLocation, config.merakiNotificationTTL);
+                    indoorLocation.ip = ip ;
+                    cache.setObject(ip, {
+                        indoorLocation: indoorLocation,
+                        merakiObservation: globalObservation
+                    },config.merakiNotificationTTL);
                 }
 
                 if (config.macAddressEnabled.toString() === 'true' && observation.clientMac) {
@@ -62,23 +74,15 @@ exports.processMerakiNotifications = function (req, res) {
                 }
             }
 
-
-/*
-            // Hash MAC address
-            var client_mac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
-            globalObservation.clientMac = client_mac ;
-            indoorLocation.client_mac = client_mac ;
-
-            // Check place
-            indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
-            globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
+            // globalObservation.clientMac = client_mac ;
+            // indoorLocation.client_mac = client_mac ;
 
             // Generate Random data
             // indoorLocation.place = _.sample(['Zone A','Zone B']);
             // globalObservation.seenEpoch = indoorLocation.timestamp ;
             
             parcours.gestionParcours(indoorLocation,2);
-
+/*
             // Do whatever you want with the observations received here
             eventHub.sendMessage({
                 client_mac : client_mac,
