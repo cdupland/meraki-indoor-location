@@ -82,7 +82,7 @@ exports.processMerakiNotifications = function (req, res) {
             // globalObservation.seenEpoch = indoorLocation.timestamp ;
             
             parcours.gestionParcours(indoorLocation,2);
-/*
+
             // Do whatever you want with the observations received here
             eventHub.sendMessage({
                 client_mac : client_mac,
@@ -105,7 +105,7 @@ exports.processMerakiNotifications = function (req, res) {
                 secret: config.secret,
                 message_type: 'brut'
             });
-*/
+
         });
 
         res.status(200).end();
