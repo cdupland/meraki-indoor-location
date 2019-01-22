@@ -41,7 +41,8 @@ exports.processMerakiNotifications = function (req, res) {
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
-            
+            var original_client_mac = globalObservation.clientMac ;
+
             // Check place
             indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
             globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
@@ -50,17 +51,22 @@ exports.processMerakiNotifications = function (req, res) {
             var client_mac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
             globalObservation.clientMac = client_mac ;
             indoorLocation.client_mac = globalObservation.clientMac ;
-
+            indoorLocation.original_client_mac = original_client_mac ;
              /*
              IP address
-             */
+             
             var ip = _.get(observation, 'ipv4') || 'null';
             ip = ip.match(ipExtractor)[1];
-
+                */
              /*
              Store in cache
              */
             if (!_.isEmpty(indoorLocation)) {
+                    cache.setObject(original_client_mac, {
+                        indoorLocation: indoorLocation,
+                        merakiObservation: globalObservation
+                    },config.merakiNotificationTTL);
+                /*
                 if (net.isIP(ip) === 4) {
                     indoorLocation.ip = ip ;
                     cache.setObject(ip, {
@@ -72,6 +78,7 @@ exports.processMerakiNotifications = function (req, res) {
                 if (config.macAddressEnabled.toString() === 'true' && observation.clientMac) {
                     cache.setObject(observation.clientMac, indoorLocation, config.merakiNotificationTTL);
                 }
+                */
             }
 
             // globalObservation.clientMac = client_mac ;
