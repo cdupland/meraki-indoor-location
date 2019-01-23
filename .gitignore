@@ -2,6 +2,10 @@
 
 
 # Cyril
+meraki-configurator/*.txt
+/meraki-configurator/*.json
+/meraki-configurator/*.xml
+/meraki-listener/*.json
 meraki-listener/config/env/all_*.js
 meraki-listener/config/env/caissedesdepots.js
 meraki-listener/test/
@@ -97,9 +101,7 @@ typings/
 # End of https://www.gitignore.io/api/node,macos
 
 /credentials.txt
-/meraki-configurator/*.json
-/meraki-configurator/*.xml
-/meraki-listener/*.json
+
 
 #WebStorm
 .idea

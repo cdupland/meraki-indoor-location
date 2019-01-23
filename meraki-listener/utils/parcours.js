@@ -32,7 +32,7 @@ exports.gestionParcours = function (indoorLocation,version,next){
                     nb_points : 1
                 }
             ];
-            cache.setObject(indoorLocation.client_mac,indoorLocation);
+            cache.setObject(indoorLocation.ip ? indoorLocation.ip : indoorLocation.client_mac,indoorLocation);
         
         } else {
             
@@ -99,7 +99,7 @@ exports.gestionParcours = function (indoorLocation,version,next){
                 cacheObj.places_list[cacheObj.places_list.length-1].duration_second = indoorLocation.timestamp - cacheObj.places_list[cacheObj.places_list.length-1].first_seen
             }
 
-            cache.setObject(indoorLocation.client_mac,cacheObj);
+            cache.setObject(indoorLocation.ip ? indoorLocation.ip : indoorLocation.client_mac,cacheObj);
         }
     });   
 }
