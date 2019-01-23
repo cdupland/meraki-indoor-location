@@ -8,7 +8,7 @@ var chalk = require('chalk');
 var request = require('request');
 var imageSize = require('image-size');
 var program = require('commander');
-var mapwize = require('../meraki-server/utils/mapwize');
+var mapwize = require('../meraki-listener/utils/mapwize');
 
 program
     .version('0.1.0')

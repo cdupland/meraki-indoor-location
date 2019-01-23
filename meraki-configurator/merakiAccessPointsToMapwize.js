@@ -7,7 +7,7 @@ var MapwizeAPI = require('mapwize-node-api');
 var chalk = require('chalk');
 var program = require('commander');
 var xml = require('xml2json');
-var mapwize = require('../meraki-server/utils/mapwize');
+var mapwize = require('../meraki-listener/utils/mapwize');
 
 program
     .version('0.1.0')
