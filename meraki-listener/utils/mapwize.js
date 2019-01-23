@@ -1,26 +1,14 @@
 'use strict';
 
 var _ = require('lodash');
-var async = require('async');
-var moment = require('moment-timezone');
-var util = require('./index');
 var SphericalMercator = require('sphericalmercator');
-var MapwizeAPI = require('mapwize-node-api');
 
 var config = require('../config/config');
-
-var MapwizeClient = null ;
-
-if(config.mapwise.apikey && config.mapwise.organizationid)
-    MapwizeClient = new MapwizeAPI(config.mapwise.apikey,config.mapwise.organizationid,{serverUrl: config.mapwise.apiurl});
-
 
 var merc = new SphericalMercator({
     size: 256
 });
 var floorPlansByName = {};
-var placesList = [] ;
-
 
 /**
  * Compute X/Y positions for lat/lng corners.
@@ -130,7 +118,6 @@ exports.parseFloorPlans = parseFloorPlans;
  */
 function getIndoorLocation(merakiObservation) {
     var apFloor = merakiObservation.apFloors[0] ? merakiObservation.apFloors[0] : '';
-    var apTag = merakiObservation.apTags[1] ? merakiObservation.apTags[1] : '';
     var floorPlan = floorPlansByName[apFloor];
     var indoorLocation = {};
 
@@ -138,25 +125,19 @@ function getIndoorLocation(merakiObservation) {
         var scale = getScale(merakiObservation.location, floorPlan.merakiXYCorners);
         var coordinate = projectWithScale(scale, floorPlan.mapwizeXYCorners);
 
-        // Create the object that will be saved in cache
+        // Create the object that will be saved in redis
         indoorLocation = {
             latitude: coordinate.lat,
             longitude: coordinate.lng,
             floor: floorPlan.floor,
             accuracy: _.get(merakiObservation, 'location.unc'),
-            timestamp: _.get(merakiObservation, 'seenEpoch', Date.now()),
-            ap: apTag,
-            rssi: _.get(merakiObservation, 'rssi'),
-            seentime: moment.unix(_.get(merakiObservation, 'seenEpoch')).tz(config.timezone).format('DD/MM/YYYY HH:mm:ss'),
-            merakiObservation : merakiObservation
+            timestamp: _.get(merakiObservation, 'seenEpoch', Date.now())
         };
     }
 
     return indoorLocation;
 };
 exports.getIndoorLocation = getIndoorLocation;
-
-
 
 /**
  * Get all places from Venue on Mapwise
