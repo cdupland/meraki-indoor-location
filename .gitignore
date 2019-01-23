@@ -1,5 +1,12 @@
 # Created by https://www.gitignore.io/api/node,macos
 
+# Cyril
+/meraki-configurator/*.json
+/meraki-configurator/*.xml
+/meraki-configurator/*.txt
+/meraki-listener/*.json
+/meraki-listener/config/env/all_*.js
+
 ### macOS ###
 *.DS_Store
 .AppleDouble
@@ -91,9 +98,7 @@ typings/
 # End of https://www.gitignore.io/api/node,macos
 
 /credentials.txt
-/meraki-configurator/*.json
-/meraki-configurator/*.xml
-/meraki-listener/*.json
+
 
 #WebStorm
 .idea
