@@ -48,6 +48,9 @@ exports.processMerakiNotifications = function (req, res) {
             eventHub.sendMessage({
                 indoorLocation: indoorLocation,
                 merakiObservation: globalObservation,
+                merakiObservation_latitude : globalObservation.location.lat,
+                merakiObservation_longitude : globalObservation.location.lng,
+                merakiObservation_unc : globalObservation.location.unc,
                 secret: config.secret
             });
 
