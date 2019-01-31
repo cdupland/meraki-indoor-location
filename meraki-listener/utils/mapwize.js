@@ -167,8 +167,11 @@ exports.getPlaces = getPlaces ;
  *
  */
 function checkPlace(appFloor,lat,lng){
-    return util.checkPlaces(floorPlansByName[appFloor].floor,[lng,lat],placesList);
-}
+    if(floorPlansByName[appFloor])
+        return util.checkPlaces(floorPlansByName[appFloor].floor,[lng,lat],placesList);
+    else
+        return "" ;
+    }
 exports.checkPlace = checkPlace ;
 
 /*
