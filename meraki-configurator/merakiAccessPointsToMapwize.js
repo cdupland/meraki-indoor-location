@@ -66,7 +66,7 @@ function createLayerBeacons(layer, accessPoints, callback) {
             cb();
         }
         else {
-            console.log(chalk.red("\t\tNo access point infos for beacon id < " + nodeIds + " > name < " + accessPoint.name + " >"));
+            console.log(chalk.red("\t\tNo access point infos for beacon id < " + nodeIds + " >"));
             cb();
         }
     }, callback)

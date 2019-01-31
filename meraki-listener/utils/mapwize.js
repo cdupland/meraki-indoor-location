@@ -35,6 +35,7 @@ function getXYCorners(corners) {
 
     return positions;
 }
+exports.getXYCorners = getXYCorners;
 
 /**
  * Compute the scale for a lat/lng coordinate with corners in x/y.
@@ -64,6 +65,7 @@ function getScale(coordinate, xyCorners) {
 
     return scale;
 };
+exports.getScale = getScale;
 
 /**
  * Project the scale to xyCorners.
@@ -91,6 +93,7 @@ function projectWithScale(scale, xyCorners) {
 
     return {lng: lngLat[0], lat: lngLat[1]};
 };
+exports.projectWithScale = projectWithScale;
 
 /**
  * Internal method used to parse and to process the needed information of a given floorPlan
