@@ -3,4 +3,4 @@
 /**
  * Load app configurations
  */
-module.exports = require('./env/all');
+module.exports = require('./env/all_newton');

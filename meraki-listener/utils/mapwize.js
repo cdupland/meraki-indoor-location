@@ -2,13 +2,21 @@
 
 var _ = require('lodash');
 var SphericalMercator = require('sphericalmercator');
-
 var config = require('../config/config');
+var util = require('./index');
+var MapwizeAPI = require('mapwize-node-api');
+
+var MapwizeClient = null ;
+
+if(config.mapwise.apikey && config.mapwise.organizationid)
+    MapwizeClient = new MapwizeAPI(config.mapwise.apikey,config.mapwise.organizationid,{serverUrl: config.mapwise.apiurl});
+
 
 var merc = new SphericalMercator({
     size: 256
 });
 var floorPlansByName = {};
+var placesList = [];
 
 /**
  * Compute X/Y positions for lat/lng corners.
