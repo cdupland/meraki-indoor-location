@@ -21,7 +21,7 @@ module.exports = function (socket) {
     // We sent the last known user position if it exists
     cache.getObject(`${socket.userId}`, function (err, indoorLocation) {
         if (!err && indoorLocation) {
-            utils.sendIndoorLocationTo(indoorLocation, socket.userId);
+            // utils.sendIndoorLocationTo(indoorLocation, socket.userId);
         }
     });
 
