@@ -106,15 +106,16 @@ exports.broadcast = broadcast;
  * @param indoorLocation indoorLocation to send into the socket channel
  * @param userId Unique identifier used for the channel name
  */
-function sendIndoorLocationTo(indoorLocation, userId) {
-    var clients = _.filter(_.get(io, 'sockets.connected'), {userId: userId});
+function sendIndoorLocationTo(indoorLocation, userMac) {
+    var clients = _.filter(_.get(io, 'sockets.connected'), {userMac: userMac});
 
     if (!_.isEmpty(clients)) {
         _.forEach(clients, function (client) {
             client.emit('indoorLocationChange', {
-                userId: userId,
+                userMac: userMac,
                 indoorLocation: indoorLocation
             });
+            console.log('Send indoorLocaiton for ip -> '+userMac);
         });
     }
 };

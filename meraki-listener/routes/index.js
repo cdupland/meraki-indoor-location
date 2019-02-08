@@ -42,16 +42,17 @@ exports.processMerakiNotifications = function (req, res) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
             var original_client_mac = globalObservation.clientMac ;
+            indoorLocation.client_mac = original_client_mac ;
 
             // Check place
             indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
             globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
 
             // Hash MAC address
-            var client_mac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
-            globalObservation.clientMac = client_mac ;
-            indoorLocation.client_mac = globalObservation.clientMac ;
-            indoorLocation.original_client_mac = original_client_mac ;
+            // var client_mac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
+            // globalObservation.clientMac = client_mac ;
+            // indoorLocation.client_mac = globalObservation.clientMac ;
+            // indoorLocation.original_client_mac = original_client_mac ;
             
             /*
              IP address
@@ -65,7 +66,8 @@ exports.processMerakiNotifications = function (req, res) {
             if (!_.isEmpty(indoorLocation)) {
                 if (net.isIP(ip) === 4) {
                     indoorLocation.ip = ip ;
-                    cache.setObject(ip,indoorLocation,config.merakiNotificationTTL);
+                    cache.setObject(indoorLocation.client_mac,indoorLocation,config.merakiNotificationTTL);
+                    // console.log('Set cache : IP -> '+indoorLocation.client_mac+', indoorLocation ->',indoorLocation)
                 }
  
                 // if (config.macAddressEnabled.toString() === 'true' && observation.clientMac) {
