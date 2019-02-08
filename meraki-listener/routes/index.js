@@ -64,16 +64,8 @@ exports.processMerakiNotifications = function (req, res) {
              Store in cache
              */
             if (!_.isEmpty(indoorLocation)) {
-                if (net.isIP(ip) === 4) {
-                    indoorLocation.ip = ip ;
-                    cache.setObject(indoorLocation.client_mac,indoorLocation,config.merakiNotificationTTL);
-                    // console.log('Set cache : IP -> '+indoorLocation.client_mac+', indoorLocation ->',indoorLocation)
-                }
- 
-                // if (config.macAddressEnabled.toString() === 'true' && observation.clientMac) {
-                //     cache.setObject(observation.clientMac, indoorLocation, config.merakiNotificationTTL);
-                // }
-               
+                indoorLocation.ip = ip ;
+                cache.setObject(indoorLocation.client_mac,indoorLocation,config.merakiNotificationTTL);
             }
 
             // globalObservation.clientMac = client_mac ;
