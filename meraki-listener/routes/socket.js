@@ -26,7 +26,7 @@ module.exports = function (socket) {
         }
     });
 
-    var subscriber = cache.subscribe(socket.userId);
+    var subscriber = cache.subscribe(socket.userMac);
     socket.on('disconnect', function () {
         subscriber.quit();
     });
