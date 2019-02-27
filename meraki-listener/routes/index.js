@@ -46,7 +46,7 @@ exports.processMerakiNotifications = function (req, res) {
             globalObservation.clientMac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
 
             if (!_.isEmpty(indoorLocation)) {
-                cache.setObject(indoorLocation.client_mac,indoorLocation,config.merakiNotificationTTL);
+                cache.setObject(1,indoorLocation,config.merakiNotificationTTL);
             }
 
             // Do whatever you want with the observations received here
