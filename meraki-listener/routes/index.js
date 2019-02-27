@@ -46,7 +46,6 @@ exports.processMerakiNotifications = function (req, res) {
             globalObservation.clientMac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
 
             if (!_.isEmpty(indoorLocation)) {
-                indoorLocation.ip = ip ;
                 cache.setObject(indoorLocation.client_mac,indoorLocation,config.merakiNotificationTTL);
             }
 
