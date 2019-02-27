@@ -4,7 +4,7 @@ var NodeCache = require('node-cache');
 var EventEmitter = require('events');
 
 var utils = require('../utils/index');
-var logger = require('../utils/log');
+// var logger = require('../utils/log');
 
 utils.log('Using in-memory node-cache');
 
@@ -21,7 +21,7 @@ exports.setObject = setObject;
 
 function getObject(key, callback) {
     cache.get(key, function(err, reply) {
-        if(err) logger.error(err);
+        // if(err) logger.error(err);
         callback(err, reply ? JSON.parse(reply) : null);
     });
 };
