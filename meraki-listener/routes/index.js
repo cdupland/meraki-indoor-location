@@ -11,6 +11,7 @@ var eventHub = require('../utils/eventhub');
 var mapwize = require('../utils/mapwize');
 var utils = require('../utils/index');
 const crypto = require('crypto');
+var cache = require('../cache');
 
 var ipExtractor = /^\/?(.+)/;
 
@@ -43,6 +44,11 @@ exports.processMerakiNotifications = function (req, res) {
 
             // Hash MAC address
             globalObservation.clientMac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
+
+            if (!_.isEmpty(indoorLocation)) {
+                indoorLocation.ip = ip ;
+                cache.setObject(indoorLocation.client_mac,indoorLocation,config.merakiNotificationTTL);
+            }
 
             // Do whatever you want with the observations received here
             eventHub.sendMessage({
