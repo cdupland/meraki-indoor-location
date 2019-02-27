@@ -44,20 +44,21 @@ exports.processMerakiNotifications = function (req, res) {
 
             // Hash MAC address
             globalObservation.clientMac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
-
+            indoorLocation.client_mac = globalObservation.clientMac ;
+            
             if (!_.isEmpty(indoorLocation)) {
                 cache.setObject('1',indoorLocation,config.merakiNotificationTTL);
             }
 
             // Do whatever you want with the observations received here
-            eventHub.sendMessage({
-                indoorLocation: indoorLocation,
-                merakiObservation: globalObservation,
-                merakiObservation_latitude : globalObservation.location.lat,
-                merakiObservation_longitude : globalObservation.location.lng,
-                merakiObservation_unc : globalObservation.location.unc,
-                secret: config.secret
-            });
+            // eventHub.sendMessage({
+            //     indoorLocation: indoorLocation,
+            //     merakiObservation: globalObservation,
+            //     merakiObservation_latitude : globalObservation.location.lat,
+            //     merakiObservation_longitude : globalObservation.location.lng,
+            //     merakiObservation_unc : globalObservation.location.unc,
+            //     secret: config.secret
+            // });
 
         });
 

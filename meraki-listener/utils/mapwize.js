@@ -142,7 +142,9 @@ function getIndoorLocation(merakiObservation) {
             longitude: coordinate.lng,
             floor: floorPlan.floor,
             accuracy: _.get(merakiObservation, 'location.unc'),
-            timestamp: _.get(merakiObservation, 'seenEpoch', Date.now())
+            timestamp: _.get(merakiObservation, 'seenEpoch', Date.now()),
+            apMac : merakiObservation.apMac,
+            rssi : merakiObservation.rssi
         };
     }
 

@@ -11,16 +11,16 @@ var cache = require('../cache');
  * To receive notifications, redis needs to be configured via the notify-keyspace-events parameter set to 'K$'.
  */
 module.exports = function (socket) {
-    socket.userMac = _.get(socket, 'handshake.query.allObs', null);
+    socket.allObs = _.get(socket, 'handshake.query.allObs', null);
 
-    if (!socket.userMac) {
+    if (!socket.allObs) {
         socket.emit('error', new Error('Unknown user'));
         socket.disconnect(true);
     }
 
     // We sent the last known user position if it exists
     // cache.getObject(`${socket.userId}`, function (err, indoorLocation) {
-    cache.getObject(`${socket.userMac}`, function (err, indoorLocation) {
+    cache.getObject(`${socket.allObs}`, function (err, indoorLocation) {
         if (!err && indoorLocation) {
             // utils.sendIndoorLocationTo(indoorLocation, socket.userId);
         }
