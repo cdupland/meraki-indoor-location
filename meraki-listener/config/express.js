@@ -3,12 +3,14 @@
 var bodyParser = require('body-parser');
 
 var routes = require('../routes');
+var socket = require('../routes/socket');
 var utils = require('../utils');
 var config = require('./config');
 
 module.exports = function () {
     var app = require('express')();
     var server = require('http').Server(app);
+    var io = require('socket.io')(server);
 
     // Express configuration
     app.use(bodyParser.json({limit: config.maxBodySize}));
@@ -38,6 +40,12 @@ module.exports = function () {
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
         return next();
     });
+
+    // Initialize utils before all
+    utils.init(io);
+
+    // Socket.io Communication
+    io.on('connection', socket);
 
     // Application routes
     app.post('/', routes.processMerakiNotifications);
