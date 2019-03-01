@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var async = require('async');
 var util = require('./index');
-var SphericalMercator = require('sphericalmercator');
+var SphericalMercator = require('@mapbox/sphericalmercator');
 var MapwizeAPI = require('mapwize-node-api');
 
 var config = require('../config/config');
