@@ -18,7 +18,7 @@ module.exports = function () {
     app.options('*', function(req, res) {
         var origin = req.get('origin');
         if (origin) {
-            res.setHeader('Access-Control-Allow-Origin', origin);
+            res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Credentials', true);
         } else {
             res.setHeader('Access-Control-Allow-Origin', '*');
@@ -31,7 +31,7 @@ module.exports = function () {
     app.use(function(req, res, next) {
         var origin = req.get('origin');
         if (origin) {
-            res.setHeader('Access-Control-Allow-Origin', origin);
+            res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Credentials', true);
         } else {
             res.setHeader('Access-Control-Allow-Origin', '*');
