@@ -144,7 +144,9 @@ function getIndoorLocation(merakiObservation) {
             accuracy: _.get(merakiObservation, 'location.unc'),
             timestamp: _.get(merakiObservation, 'seenEpoch', Date.now()),
             apMac : merakiObservation.apMac,
-            rssi : merakiObservation.rssi
+            rssi : merakiObservation.rssi,
+            ipv4 : merakiObservation.ipv4,
+            ipv6 : merakiObservation.ipv6
         };
     }
 
