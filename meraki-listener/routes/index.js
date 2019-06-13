@@ -6,15 +6,15 @@ var net = require('net');
 var fs = require('fs');
 
 var config = require('../config/config');
-// var documentDB = require('../utils/documentdb');
 var eventHub = require('../utils/eventhub');
 var mapwize = require('../utils/mapwize');
 var utils = require('../utils/index');
 const crypto = require('crypto');
 var cache = require('../cache');
+var moment = require("moment-timezone");
 
 var ipExtractor = /^\/?(.+)/;
-
+const datetime_format = "YYYY-MM-DD HH:mm:ss" ;
 
 /**
  * Default route
@@ -50,6 +50,13 @@ exports.processMerakiNotifications = function (req, res) {
                 cache.setObject('1',indoorLocation,config.merakiNotificationTTL);
             }
 
+            // console.log(globalObservation.seenTime);
+            // console.log(moment(globalObservation.seenTime));
+            // console.log(moment(globalObservation.seenTime).tz(config.timezone).format(datetime_format));
+            
+            globalObservation.seenTimeUTC = globalObservation.seenTime ;
+            globalObservation.seenTime = moment(globalObservation.seenTime).tz(config.timezone).format(datetime_format);
+            
             // Do whatever you want with the observations received here
             eventHub.sendMessage({
                 indoorLocation: indoorLocation,
