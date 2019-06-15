@@ -14,7 +14,8 @@ module.exports = function (socket) {
     socket.allObs = _.get(socket, 'handshake.query.mac', null);
     // socket.allObs = _.get(socket, 'handshake.query.allObs', null);
 
-    if (!socket.allObs) {
+//    if (!socket.allObs) {
+    if (!socket.mac) {
         socket.emit('error', new Error('Unknown user'));
         socket.disconnect(true);
     }
