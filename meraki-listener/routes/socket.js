@@ -34,7 +34,7 @@ module.exports = function (socket) {
     });
     subscriber.on('update', function (indoorLocation) {
         if (indoorLocation) {
-            utils.sendIndoorLocationTo(indoorLocation);
+            utils.sendIndoorLocationTo(indoorLocation,socket.mac);
         }
     });
 };
