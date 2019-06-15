@@ -104,7 +104,7 @@ exports.broadcast = broadcast;
 /**
  * Utility method to send an indoorLocation into a socket channel named with the usedId
  * @param indoorLocation indoorLocation to send into the socket channel
- * @param userId Unique identifier used for the channel name
+ * @param mac Unique identifier used for the channel name
  */
 function sendIndoorLocationTo(indoorLocationn,mac) {
     // broadcast('indoorLocationChange',indoorLocation);
