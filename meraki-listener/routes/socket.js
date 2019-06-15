@@ -28,7 +28,7 @@ module.exports = function (socket) {
         }
     });
 
-    var subscriber = cache.subscribe(socket.allObs);
+    var subscriber = cache.subscribe(socket.mac);
     socket.on('disconnect', function () {
         subscriber.quit();
     });
