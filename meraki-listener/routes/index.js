@@ -47,7 +47,7 @@ exports.processMerakiNotifications = function (req, res) {
             indoorLocation.client_mac = globalObservation.clientMac ;
             
             if (!_.isEmpty(indoorLocation)) {
-                cache.setObject('1',indoorLocation,config.merakiNotificationTTL);
+                cache.setObject(indoorLocation.client_mac,indoorLocation,config.merakiNotificationTTL);
             }
 
             // console.log(globalObservation.seenTime);

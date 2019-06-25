@@ -104,18 +104,18 @@ exports.broadcast = broadcast;
 /**
  * Utility method to send an indoorLocation into a socket channel named with the usedId
  * @param indoorLocation indoorLocation to send into the socket channel
- * @param userId Unique identifier used for the channel name
+ * @param mac Unique identifier used for the channel name
  */
-function sendIndoorLocationTo(indoorLocation) {
-    broadcast('indoorLocationChange',indoorLocation);
-    // var clients = _.filter(_.get(io, 'sockets.connected'), {allObs : '1'});
+function sendIndoorLocationTo(indoorLocation,mac) {
+    // broadcast('indoorLocationChange',indoorLocation);
+    var clients = _.filter(_.get(io, 'sockets.connected'), {mac : mac});
 
-    // if (!_.isEmpty(clients)) {
-    //     _.forEach(clients, function (client) {
-    //         client.emit('indoorLocationChange', {
-    //             indoorLocation: indoorLocation
-    //         });
-    //     });
-    // }
+    if (!_.isEmpty(clients)) {
+        _.forEach(clients, function (client) {
+            client.emit('indoorLocationChange', {
+                indoorLocation: indoorLocation
+            });
+        });
+    }
 };
 exports.sendIndoorLocationTo = sendIndoorLocationTo;
