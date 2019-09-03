@@ -108,14 +108,12 @@ exports.broadcast = broadcast;
  */
 function sendIndoorLocationTo(indoorLocation,mac) {
     // broadcast('indoorLocationChange',indoorLocation);
-    // var clients = _.filter(_.get(io, 'sockets.connected'), {mac : mac});
-    var clients = _.filter(_.get(io, 'sockets.connected'), {allObs : '1'});
+    var clients = _.filter(_.get(io, 'sockets.connected'), {mac : mac});
+    // var clients = _.filter(_.get(io, 'sockets.connected'), {allObs : '1'});
 
     if (!_.isEmpty(clients)) {
         _.forEach(clients, function (client) {
-            client.emit('indoorLocationChange', {
-                indoorLocation: indoorLocation
-            });
+            client.emit('indoorLocationChange', indoorLocation);
         });
     }
 };

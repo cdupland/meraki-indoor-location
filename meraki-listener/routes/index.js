@@ -42,19 +42,23 @@ exports.processMerakiNotifications = function (req, res) {
             indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
             globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
 
+            // Convert to specific timezone
+            globalObservation.seenTimeUTC = globalObservation.seenTime ;
+            globalObservation.seenTime = moment(globalObservation.seenTime).tz(config.timezone).format(datetime_format);
+            
             // Send for socket
             if (!_.isEmpty(indoorLocation)) {
-                // cache.setObject(globalObservation.clientMac,indoorLocation,config.merakiNotificationTTL);
-                cache.setObject('1',indoorLocation,config.merakiNotificationTTL);
+                cache.setObject(globalObservation.clientMac,{
+                    indoorLocation : indoorLocation,
+                    globalObservation : globalObservation
+                },config.merakiNotificationTTL);
+                // cache.setObject('1',indoorLocation,config.merakiNotificationTTL);
             }
 
             // Hash MAC address
             globalObservation.clientMac = crypto.createHmac('sha256',config.secret_hash).update(globalObservation.clientMac).digest('hex');
             indoorLocation.client_mac = globalObservation.clientMac ;
 
-            // Convert to specific timezone
-            globalObservation.seenTimeUTC = globalObservation.seenTime ;
-            globalObservation.seenTime = moment(globalObservation.seenTime).tz(config.timezone).format(datetime_format);
 
             // Do whatever you want with the observations received here
             eventHub.sendMessage({

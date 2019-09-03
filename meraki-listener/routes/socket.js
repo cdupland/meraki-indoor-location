@@ -11,11 +11,11 @@ var cache = require('../cache');
  * To receive notifications, redis needs to be configured via the notify-keyspace-events parameter set to 'K$'.
  */
 module.exports = function (socket) {
-    // socket.mac = _.get(socket, 'handshake.query.mac', null);
-    socket.allObs = _.get(socket, 'handshake.query.allObs', null);
+    socket.mac = _.get(socket, 'handshake.query.mac', null);
+    // socket.allObs = _.get(socket, 'handshake.query.allObs', null);
 
-   if (!socket.allObs) {
-    // if (!socket.mac) {
+//    if (!socket.allObs) {
+    if (!socket.mac) {
         socket.emit('error', new Error('Unknown user'));
         socket.disconnect(true);
     }
@@ -28,15 +28,15 @@ module.exports = function (socket) {
     //     }
     // });
 
-    // var subscriber = cache.subscribe(socket.mac);
-    var subscriber = cache.subscribe(socket.allObs);
+    var subscriber = cache.subscribe(socket.mac);
+    // var subscriber = cache.subscribe(socket.allObs);
     socket.on('disconnect', function () {
         subscriber.quit();
     });
     subscriber.on('update', function (indoorLocation) {
         if (indoorLocation) {
-            // utils.sendIndoorLocationTo(indoorLocation,socket.mac);
-            utils.sendIndoorLocationTo(indoorLocation);
+            utils.sendIndoorLocationTo(indoorLocation,socket.mac);
+            // utils.sendIndoorLocationTo(indoorLocation);
         }
     });
 };

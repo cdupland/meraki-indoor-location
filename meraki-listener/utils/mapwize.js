@@ -146,7 +146,8 @@ function getIndoorLocation(merakiObservation) {
             apMac : merakiObservation.apMac,
             rssi : merakiObservation.rssi,
             ipv4 : merakiObservation.ipv4,
-            ipv6 : merakiObservation.ipv6
+            ipv6 : merakiObservation.ipv6,
+            client_mac : clientMac
         };
     }
 
