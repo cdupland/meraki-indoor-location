@@ -44,7 +44,8 @@ exports.processMerakiNotifications = function (req, res) {
 
             // Send for socket
             if (!_.isEmpty(indoorLocation)) {
-                cache.setObject(globalObservation.clientMac,indoorLocation,config.merakiNotificationTTL);
+                // cache.setObject(globalObservation.clientMac,indoorLocation,config.merakiNotificationTTL);
+                cache.setObject('1',indoorLocation,config.merakiNotificationTTL);
             }
 
             // Hash MAC address
