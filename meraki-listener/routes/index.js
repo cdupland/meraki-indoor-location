@@ -40,8 +40,8 @@ exports.processMerakiNotifications = function (req, res) {
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
             // Check place
             indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
-            if(observation.location && observation.location.lat && observation.location.lng)
-                globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
+            if(globalObservation.location && globalObservation.location.lat && globalObservation.location.lng)
+                globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,globalObservation.location.lat,globalObservation.location.lng);
             else
                 console.log(observation);
                 
@@ -67,8 +67,8 @@ exports.processMerakiNotifications = function (req, res) {
             eventHub.sendMessage({
                 indoorLocation: indoorLocation,
                 merakiObservation: globalObservation,
-                merakiObservation_latitude : globalObservation.location.lat,
-                merakiObservation_longitude : globalObservation.location.lng,
+                merakiObservation_latitude : globalObservation.location.lat || null,
+                merakiObservation_longitude : globalObservation.location.lng || null,
                 merakiObservation_unc : globalObservation.location.unc,
                 secret: config.secret
             });
