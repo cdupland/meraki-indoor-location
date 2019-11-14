@@ -40,8 +40,11 @@ exports.processMerakiNotifications = function (req, res) {
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
             // Check place
             indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
-            globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
-
+            if(observation.location.lat && observation.location.lng)
+                globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,observation.location.lat,observation.location.lng);
+            else
+                console.log(observation);
+                
             // Convert to specific timezone
             globalObservation.seenTimeUTC = globalObservation.seenTime ;
             globalObservation.seenTime = moment(globalObservation.seenTime).tz(config.timezone).format(datetime_format);
