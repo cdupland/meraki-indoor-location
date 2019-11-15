@@ -34,6 +34,9 @@ exports.processMerakiNotifications = function (req, res) {
     // Check secret sent by Meraki (if set)
     if ((!config.secret || config.secret === body.secret) && body.type === 'DevicesSeen') {
 
+        var id_request = req.body.data.apMac + '_' + req.body.data.observations.length + '_' + moment().tz(config.timezone).format(datetime_format); ;
+        id_request += Buffer.from(id_request).toString('base64');
+
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
 
@@ -42,8 +45,10 @@ exports.processMerakiNotifications = function (req, res) {
             indoorLocation.place = mapwize.checkPlace(globalObservation.apFloors,indoorLocation.latitude,indoorLocation.longitude);
             if(globalObservation.location && globalObservation.location.lat && globalObservation.location.lng)
                 globalObservation.place = mapwize.checkPlace(globalObservation.apFloors,globalObservation.location.lat,globalObservation.location.lng);
-            else
+            else{
                 console.log(observation);
+                globalObservation.place = null ;
+            }
                 
             // Convert to specific timezone
             globalObservation.seenTimeUTC = globalObservation.seenTime ;
@@ -70,7 +75,8 @@ exports.processMerakiNotifications = function (req, res) {
                 merakiObservation_latitude : (globalObservation.location && globalObservation.location.lat)? globalObservation.location.lat : null,
                 merakiObservation_longitude : (globalObservation.location && globalObservation.location.lng)? globalObservation.location.lng : null,
                 merakiObservation_unc : globalObservation.location.unc,
-                secret: config.secret
+                secret: config.secret,
+                id_request : id_request
             });
 
         });
